@@ -1,0 +1,21 @@
+<h1>My Contacts</h1>
+<h2>Add Contacts</h2>
+<%= form_with url: contacts_path,method: :post do |form| %>
+  <%= form.collection_select :contact_id, @users, :id, :name %>
+  <%=form.submit "Add Contact" %>
+<% end %>
+<h2>Contacts</h2>
+<% if @contacts.any? %>
+  <ul>
+    <% @contacts.each do |contact| %>
+    <li>
+      <strong><%= contact.name %></strong>
+
+      <%= button_to "Remove", contact_path(@user.contacts.find_by(contact_id: contact.id)), method: :delete %>
+    </li>
+    <% end %>
+  </ul>
+  <%else %>
+  <p>You don't have any contacts yet</p>
+<% end %>
+<p>Find me in app/views/contacts/index.html.erb</p>
