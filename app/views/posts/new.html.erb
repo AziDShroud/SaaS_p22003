@@ -1,0 +1,35 @@
+<h1>Create New Post</h1>
+<%= form_with model: @post, local: true do |f|%>
+  <% if @post.errors.any? %>
+    <div style="color:red;">
+      <h2><%= pluralize(@post.errors.count, "error") %>prohibited this post from being saved:</h2>
+      <ul>
+        <% @post.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= f.label :title %><br>
+    <%= f.text_field :title, required: true %>
+  </div>
+  <br>
+
+  <div>
+    <%= f.label :category_id, "Category" %><br>
+    <%= f.collection_select :category_id, Category.all, :id, :name, prompt: "Select a Category" %>
+  </div>
+  <br>
+  <div>
+    <%= f.label :content %><br>
+    <%= f.text_area :content, rows: 5, required: true %>
+  </div>
+  <br>
+  <div>
+    <%= f.submit "Create Post" %>
+    <%= link_to "Cancel", posts_path %>
+  </div>
+<% end %>
+<p>Find me in app/views/posts/new.html.erb</p>

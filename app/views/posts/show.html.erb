@@ -1,0 +1,14 @@
+<h1><%= @post.title %>></h1>
+<p>
+  <strong>Category:</strong><%= @post.category.name %> |
+  <strong>Author:</strong><%=@post.user.name %> |
+  <strong>Posted:</strong> <%= @post.created_at.strftime("%B %d, %Y") %>
+</p>
+
+<hr>
+<div>
+  <p><%= simple_format(@post.content) %></p>
+</div>
+<hr>
+<%= link_to "<- Back to Posts", posts_path %>
+<p>Find me in app/views/posts/show.html.erb</p>

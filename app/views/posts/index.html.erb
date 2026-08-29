@@ -1,0 +1,25 @@
+<h1>Laboratory Portal-Posts</h1>
+<!-- Search and Filter Form-->
+<%= form_with url: posts_path, method: :get, local: true do |f| %>
+  <div>
+    <%= f.label :query, "Search" %>
+    <%= f.text_field :query, value: params[:query],placeholder:"Search Posts..."%>
+
+    <%= f.label :category_id, "Category:" %>
+    <%= f.select :category_id, options_from_collection_for_select(Category.all, :id, :name, params[:category_id]), include_blank: "All Categories" %>
+    <%= f.submit "Filter" %>
+  </div>
+<% end %>
+<hr>
+<%= link_to "New Post", new_post_path %>
+
+<h2>All Posts</h2>
+<% @posts.each do |post| %>
+  <div>
+    <h3><%= link_to post.title, post %></h3>
+    <p><strong>Category:</strong> <%= post.category.name %> |<strong>Author:</strong><%= post.user.name %></p>
+    <p><%= truncate(post.content, length: 150) %></p>
+  </div>
+  <hr>
+<% end %>
+<p>Find me in app/views/posts/index.html.erb</p>

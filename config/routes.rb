@@ -1,4 +1,24 @@
 Rails.application.routes.draw do
+  get "contacts/index"
+  get "contacts/create"
+  get "contacts/destroy"
+  root "posts#index"
+
+  resources :posts
+  resources :categories, only: [:index, :show]
+  resources :groups
+  resources :users, only: [:show]
+  resources :contacts, only: [:index, :create, :destroy]
+  resources :users do
+    resources :contacts, only: [:index, :create, :destroy]
+  end
+
+  get "categories/index"
+  get "categories/show"
+  get "posts/index"
+  get "posts/show"
+  get "posts/new"
+  get "posts/create"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
