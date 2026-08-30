@@ -1,18 +1,26 @@
 <h1>My Contacts</h1>
+<%= link_to "<- Back to Posts", posts_path %>
+<% if flash[:notice] %>
+  <p style="color: green;"><%= flash[:notice] %></p>
+<% end %>
+<% if flash[:alert] %>
+  <p style="color: red;"><%= flash[:alert] %></p>
+<% end %>
 <h2>Add Contacts</h2>
-<%= form_with url: contacts_path,method: :post do |form| %>
-  <%= form.collection_select :contact_id, @users, :id, :name %>
-  <%=form.submit "Add Contact" %>
+<%= form_with scope: :contact, url: contacts_path, method: :post, data: { turbo: false } do |f| %>
+  <div>
+    <%= f.collection_select :contact_id, @users, :id, :name, { prompt: "Select a user" }, { required: true } %>
+    <%= f.submit "Add Contact" %>
+  </div>
 <% end %>
 <h2>Contacts</h2>
 <% if @contacts.any? %>
   <ul>
-    <% @contacts.each do |contact| %>
-    <li>
-      <strong><%= contact.name %></strong>
-
-      <%= button_to "Remove", contact_path(@user.contacts.find_by(contact_id: contact.id)), method: :delete %>
-    </li>
+    <% @contacts.each do |contact_record| %>
+      <li>
+        <strong><%= contact_record.contact.name %></strong>
+        <%= button_to "Remove", contact_path(contact_record), method: :delete, data: { turbo: false } %>
+      </li>
     <% end %>
   </ul>
   <%else %>

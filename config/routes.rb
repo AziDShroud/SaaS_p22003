@@ -1,17 +1,17 @@
 Rails.application.routes.draw do
-  get "contacts/index"
-  get "contacts/create"
-  get "contacts/destroy"
   root "posts#index"
 
   resources :posts
   resources :categories, only: [:index, :show]
-  resources :groups
-  resources :users, only: [:show]
-  resources :contacts, only: [:index, :create, :destroy]
+
+  resources :contacts, only: [:index, :show, :create, :destroy]
   resources :users do
     resources :contacts, only: [:index, :create, :destroy]
   end
+  resources :groups, only: [:index, :show, :new, :create, :destroy]do
+    resources :group_memberships, only: [ :create, :destroy]
+  end
+  get "up" => "rails/health#show", as: :rails_health_check
 
   get "categories/index"
   get "categories/show"
