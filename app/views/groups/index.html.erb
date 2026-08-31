@@ -1,0 +1,26 @@
+<h1>My Groups</h1>
+
+<%= link_to "Create New Group", new_group_path %>
+<%= link_to "My Contacts", contacts_path %>
+<%= link_to "Posts", posts_path %>
+
+<hr>
+
+<% if @groups.any? %>
+  <ul>
+    <% @groups.each do |group| %>
+    <li>
+      <strong>
+        <%= link_to group.name, group_path(group) %>
+      </strong>
+
+      <% if group.description.present? %>
+      - <%= group.description %>
+      <% end %>
+    </li>
+    <% end %>
+  </ul>
+  <%else %>
+  <p>You are not a member of any group</p>
+<% end %>
+<p>Find me in app/views/groups/index.html.erb</p>

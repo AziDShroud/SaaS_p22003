@@ -1,0 +1,20 @@
+<h1>Create Group</h1>
+<%= form_with model: @group do |form| %>
+  <div>
+    <%= form.label :name, "Group Name" %>
+    <%= form.text_field :name, required: true%>
+
+  </div>
+
+  <div>
+    <%= form.label :description, "Description" %>
+    <%= form.text_area :description, required: true %>
+
+  </div>
+
+  <div>
+    <%= form.submit "Create Group" %>
+  </div>
+<% end %>
+<%= link_to "Back to Groups", groups_path %>
+<p>Find me in app/views/groups/new.html.erb</p>

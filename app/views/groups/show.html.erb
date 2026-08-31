@@ -1,0 +1,53 @@
+<h1><%= @group.name %></h1>
+
+<% if flash[:notice] %>
+  <p style="color: green;"><%= flash[:notice] %></p>
+<% end %>
+<% if flash[:alert] %>
+  <p style="color: red;"><%= flash[:alert] %></p>
+<% end %>
+
+<% if @group.description.present? %>
+  <p><%= @group.description %></p>
+<% end %>
+
+<hr>
+
+<h2>Members</h2>
+<% if @members.any? %>
+  <ul>
+    <% @members.each do |member| %>
+      <% membership = @group.group_memberships.find_by(user_id: member.id) %>
+    <li>
+      <strong><%= member.name %></strong>
+      <%= member.email%>
+
+      <% if membership.role == "owner" %>
+      - Owner
+      <%else %>
+      - Member
+
+        <%= button_to "Remove", group_group_membership_path(@group, membership),method: :delete %>
+      <% end %>
+    </li>
+    <% end %>
+  </ul>
+  <%else %>
+  <p>This group has no members</p>
+<% end %>
+
+<hr>
+<h2>Add User</h2>
+<% if @users.any? %>
+  <%= form_with url: group_group_memberships_path(@group), method: :post do |form| %>
+    <%=form.collection_select :user_id, @users, :id,:name %>
+    <%= form.submit "Add User" %>
+  <% end %>
+  <%else %>
+  <p>There are no other users to add</p>
+<% end %>
+
+<hr>
+<%= link_to "Back to Groups", groups_path %>
+<%= button_to "Delete Group", group_path(@group), method: :delete, data: {turbo_confirm: "Are you sure you want to delete this group?"} %>
+<p>Find me in app/views/groups/show.html.erb</p>
