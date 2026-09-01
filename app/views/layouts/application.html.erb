@@ -24,6 +24,28 @@
   </head>
 
   <body>
+  <nav>
+    <% if user_signed_in? %>
+    Logged in as <strong><%= current_user.email %>></strong> |
+      <%= link_to 'My Posts',posts_path %> |
+      <%= link_to 'My Contacts', contacts_path %> |
+      <%= button_to "Log out", destroy_user_session_path, method: :delete, data: {turbo: false} %>
+    <%else %>
+    <%= link_to "Sign Up", new_user_registration_path %> |
+      <%= link_to "Log in", new_user_session_path %>
+    <% end %>
+    <% unless user_signed_in? %>
+      <%= button_to "Sign in with Google", user_google_oauth2_omniauth_authorize_path, method: :post, data: { turbo: false } %>
+    <% end %>
+  </nav>
+
+  <hr>
+  <%if notice %>
+    <p style="color:green"><%=notice %></p>
+  <% end %>
+  <%if alert %>
+    <p style="color: red"><%=alert %></p>
+  <% end %>
     <%= yield %>
   </body>
 </html>

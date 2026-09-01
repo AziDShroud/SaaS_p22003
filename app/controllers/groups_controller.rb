@@ -1,23 +1,31 @@
 class GroupsController < ApplicationController
-  before_action :set_user
-  before_action :set_group, only: [:show, :destroy]
+  before_action :authenticate_user!
+  before_action :set_group, only: [:show,:edit,:update,:destroy]
+  before_action :authorize_owner!, only: [:edit, :update,:destroy]
   def index
-    @groups = @user.groups
+      @groups = current_user.groups
   end
-
+  def update
+    if @group.update(group_params)
+      redirect_to @group, notice: 'Group was successfully updated.'
+    else
+      render :edit, status: :unprocessable_entity
+    end
+  end
+  def edit
+  end
   def create
-    @group = Group.new(group_params)
+    @group = current_user.groups.build(group_params)
     if @group.save
-      @group.group_memberships.create!(user: @user, role: "owner")
-      redirect_to group_path(@group), notice: "Group was successfully created."
+      @group.group_memberships.create(user: current_user)
+      redirect_to @group, notice: "Group was successfully created."
     else
       render :new, status: :unprocessable_entity
     end
   end
 
   def show
-    @members = @group.users
-    @users = User.where.not(id: @members.pluck(:id))
+
   end
 
   def new
@@ -33,7 +41,12 @@ class GroupsController < ApplicationController
     @user = User.first
   end
   def set_group
-    @group = @user.groups.find(params[:id])
+    @group = Group.find(params[:id])
+  end
+  def authorize_owner!
+    unless @group.user == current_user
+      redirect_to groups_path, alert: "You are not the owner of this group."
+    end
   end
   def group_params
     params.require(:group).permit(:name, :description)

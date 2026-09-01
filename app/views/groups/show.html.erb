@@ -1,5 +1,5 @@
 <h1><%= @group.name %></h1>
-
+<p>Owner: <%= @group.user&.email || "No owner assigned"%></p>
 <% if flash[:notice] %>
   <p style="color: green;"><%= flash[:notice] %></p>
 <% end %>
@@ -14,20 +14,13 @@
 <hr>
 
 <h2>Members</h2>
-<% if @members.any? %>
+<!--<% if @group.group_memberships.any? %>-->
   <ul>
-    <% @members.each do |member| %>
-      <% membership = @group.group_memberships.find_by(user_id: member.id) %>
-    <li>
-      <strong><%= member.name %></strong>
-      <%= member.email%>
-
-      <% if membership.role == "owner" %>
-      - Owner
-      <%else %>
-      - Member
-
-        <%= button_to "Remove", group_group_membership_path(@group, membership),method: :delete %>
+    <% @group.group_memberships.each do |membership| %>
+      <li>
+      <%= membership.user.email %>
+      <% if @group.user == current_user %>
+        <%= button_to "Remove" , group_group_membership_path(@group, membership), method: :delete%>
       <% end %>
     </li>
     <% end %>
@@ -37,17 +30,28 @@
 <% end %>
 
 <hr>
-<h2>Add User</h2>
-<% if @users.any? %>
-  <%= form_with url: group_group_memberships_path(@group), method: :post do |form| %>
-    <%=form.collection_select :user_id, @users, :id,:name %>
-    <%= form.submit "Add User" %>
+<!-- Owner-Only Section rendered ONCE -->
+<% if @group.user == current_user %>
+  <h2>Add User</h2>
+  <% eligible_users = User.where.not(id: @group.member_ids) %>
+
+  <% if eligible_users.any? %>
+    <%= form_with(model: [@group, GroupMembership.new], local: true) do |f| %>
+      <div>
+        <%= f.collection_select :user_id, eligible_users, :id, :email, prompt: "Select a user to add" %>
+        <%= f.submit "Add Member" %>
+      </div>
+    <% end %>
+  <% else %>
+    <p>There are no other users to add.</p>
   <% end %>
-  <%else %>
-  <p>There are no other users to add</p>
+
+  <div style="margin-top: 20px;">
+    <%= button_to "Delete Group", group_path(@group), method: :delete, data: { turbo_confirm: "Are you sure?" } %>
+  </div>
 <% end %>
 
-<hr>
+<br>
 <%= link_to "Back to Groups", groups_path %>
-<%= button_to "Delete Group", group_path(@group), method: :delete, data: {turbo_confirm: "Are you sure you want to delete this group?"} %>
-<p>Find me in app/views/groups/show.html.erb</p>
+
+
