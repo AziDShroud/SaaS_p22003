@@ -1,0 +1,22 @@
+<%= turbo_stream.update "message_modal" do %>
+  <div class="chat-popup" style="position: fixed; bottom: 20px; right: 20px; width: 320px; background: white; border: 2px solid #ccc; padding: 15px; z-index: 1000; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">
+
+    <div style="display: flex; justify-content: space-between; align-items: center">
+      <h4>Chat</h4>
+      <button onclick="document.getElementById('message_modal').innerHTML = ''">X</button>
+    </div>
+
+    <!-- Action Cable Live Subscription -->
+    <%= turbo_stream_from @conversation %>
+
+    <div id="messages_conversation_<%= @conversation.id %>" style="height: 200px; overflow-y: scroll; border: 1px solid #eee; padding: 5px; margin-bottom: 10px;">
+      <%= render @conversation.messages %>
+    </div>
+
+    <%= form_with(model: [@conversation, Message.new], method: :post, local: false) do |f| %>
+      <%= f.text_field :body, placeholder: "Type a message...", autocomplete: "off", style: "width: 70%;" %>
+      <%= f.submit "Send" %>
+    <% end %>
+
+  </div>
+<% end %>

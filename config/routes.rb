@@ -13,6 +13,13 @@ Rails.application.routes.draw do
   resources :groups, only: [:index, :show, :new, :create, :destroy]do
     resources :group_memberships, only: [ :create, :destroy]
   end
+  resources :conversations, only:[:show] do
+    collection do
+      post :start_direct
+      post :start_group
+    end
+    resources :messages, only: [:create]
+  end
   get "up" => "rails/health#show", as: :rails_health_check
 
   get "categories/index"

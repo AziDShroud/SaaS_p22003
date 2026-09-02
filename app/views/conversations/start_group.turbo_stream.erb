@@ -1,0 +1,24 @@
+<%= turbo_stream.update "message_modal" do %>
+  <div class="chat-popup" style="position: fixed; bottom: 20px; right: 20px; width: 340px; background: #ffffff; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 1000; padding: 15px; font-family: sans-serif;">
+
+    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 8px; margin-bottom: 10px;">
+      <h4 style="margin: 0;">Chat</h4>
+      <button onclick="document.getElementById('message_modal').innerHTML = ''" style="background: none; border: none; font-size: 16px; cursor: pointer;">&times;</button>
+    </div>
+
+    <!-- Action Cable Live Subscription -->
+    <%= turbo_stream_from @conversation %>
+
+    <div id="messages_conversation_<%= @conversation.id %>" style="height: 220px; overflow-y: auto; border: 1px solid #eee; background: #fafafa; padding: 8px; border-radius: 4px; margin-bottom: 10px;">
+      <%= render @conversation.messages %>
+    </div>
+
+    <%= form_with(model: [@conversation, Message.new], method: :post, data: { turbo_stream: true }, id: "new_message") do |f| %>
+      <div style="display: flex; gap: 6px;">
+        <%= f.text_field :body, placeholder: "Type a message...", autocomplete: "off", style: "flex: 1; padding: 6px; border: 1px solid #ccc; border-radius: 4px;" %>
+        <%= f.submit "Send", style: "padding: 6px 12px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;" %>
+      </div>
+    <% end %>
+
+  </div>
+<% end %>

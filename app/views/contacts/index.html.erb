@@ -20,6 +20,7 @@
       <li>
         <strong><%= contact_record.contact.name %></strong>
         <%= button_to "Remove", contact_path(contact_record), method: :delete, data: { turbo: false } %>
+        <%= button_to "Message", start_direct_conversations_path(recipient_id: contact_record.contact_id), method: :post, data: { turbo_frame: "message_modal" } %>
       </li>
     <% end %>
   </ul>

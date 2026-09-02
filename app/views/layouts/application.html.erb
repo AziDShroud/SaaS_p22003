@@ -38,7 +38,8 @@
       <%= button_to "Sign in with Google", user_google_oauth2_omniauth_authorize_path, method: :post, data: { turbo: false } %>
     <% end %>
   </nav>
-
+<!-- Container for dynamic message popups-->
+  <%= turbo_frame_tag "message_modal" %>
   <hr>
   <%if notice %>
     <p style="color:green"><%=notice %></p>

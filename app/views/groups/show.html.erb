@@ -28,7 +28,13 @@
   <%else %>
   <p>This group has no members</p>
 <% end %>
-
+<% if @group.members.include?(current_user) %>
+  <%= button_to "Open Group Chat",
+  start_group_conversations_path(group_id: @group.id),
+  method: :post,
+  data: {turbo_frame: "message_modal"},
+  class: "btn btn-primary"%>
+<% end %>
 <hr>
 <!-- Owner-Only Section rendered ONCE -->
 <% if @group.user == current_user %>
@@ -45,7 +51,8 @@
   <% else %>
     <p>There are no other users to add.</p>
   <% end %>
-
+<hr>
+  <%= button_to "Group Chat", start_group_conversations_path(group_id: @group.id), method: :post, data: { turbo_frame: "message_modal" } %>
   <div style="margin-top: 20px;">
     <%= button_to "Delete Group", group_path(@group), method: :delete, data: { turbo_confirm: "Are you sure?" } %>
   </div>
