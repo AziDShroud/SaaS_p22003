@@ -2,7 +2,7 @@ class Conversation < ApplicationRecord
   enum :conversation_type,{ direct:"direct",group_channel:"group_channel"}
   belongs_to :group, optional: true
   has_many :conversation_memberships, dependent: :destroy
-  has_many :users, through: :conversation_memberships
+  has_many :users,-> { distinct }, through: :conversation_memberships
   has_many :messages, dependent: :destroy
 
   # Finds or creates a 1-1 convo between two users

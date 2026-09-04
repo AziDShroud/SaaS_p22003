@@ -13,10 +13,11 @@
       <%= render @conversation.messages %>
     </div>
 
-    <%= form_with(model: [@conversation, Message.new], method: :post, local: false) do |f| %>
-      <%= f.text_field :body, placeholder: "Type a message...", autocomplete: "off", style: "width: 70%;" %>
-      <%= f.submit "Send" %>
+    <%= form_with(model: Message.new, url: conversation_messages_path(@conversation), method: :post, id: "new_message", data: { turbo_stream: true }) do |f| %>
+      <div style="display: flex; gap: 6px;">
+        <%= f.text_field :body, placeholder: "Type a message...", autocomplete: "off", style: "flex: 1; padding: 6px; border: 1px solid #ccc; border-radius: 4px;" %>
+        <%= f.submit "Send", style: "padding: 6px 12px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;" %>
+      </div>
     <% end %>
-
   </div>
 <% end %>

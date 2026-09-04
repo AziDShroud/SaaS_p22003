@@ -19,7 +19,7 @@
     <link rel="apple-touch-icon" href="/icon.png">
 
     <%# Includes all stylesheet files in app/assets/stylesheets %>
-    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
@@ -29,7 +29,8 @@
     Logged in as <strong><%= current_user.email %>></strong> |
       <%= link_to 'My Posts',posts_path %> |
       <%= link_to 'My Contacts', contacts_path %> |
-      <%= button_to "Log out", destroy_user_session_path, method: :delete, data: {turbo: false} %>
+      <%= button_to "Log out", destroy_user_session_path, method: :delete, data: {turbo: false} %> |
+      <%= turbo_stream_from "notifications_user_#{current_user.id}" %>
     <%else %>
     <%= link_to "Sign Up", new_user_registration_path %> |
       <%= link_to "Log in", new_user_session_path %>
@@ -37,6 +38,7 @@
     <% unless user_signed_in? %>
       <%= button_to "Sign in with Google", user_google_oauth2_omniauth_authorize_path, method: :post, data: { turbo: false } %>
     <% end %>
+    <div id ="flash_notifications" style="position: fixed; top: 20px; right: 20px; z-index: 9999;"></div>
   </nav>
 <!-- Container for dynamic message popups-->
   <%= turbo_frame_tag "message_modal" %>

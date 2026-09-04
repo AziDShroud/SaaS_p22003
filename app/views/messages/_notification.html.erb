@@ -1,0 +1,7 @@
+<div class=" toast-notification"style="background: #333; color: #fff; padding: 12px 16px; border-radius: 6px; margin-bottom: 8px; box-shadow:0 4px 10px rgba(0,0,0,0.2); font-family: sans-serif;display: flex; align-items: center; justify-content: space-between;min-width: 260px;">
+  <div>
+    <strong><%=message.user.email %></strong>
+    <p style="margin: 4px 0 0; font-size:13px; color:#ddd;"><%= truncate(message.body, length: 40) %></p>
+  </div>
+  <button onclick="this.parentElement.remove()"style="background: none; border: none;color: #fff; font-size: 16px; margin-left: 12px; cursor: pointer;">&times;</button>
+</div>
