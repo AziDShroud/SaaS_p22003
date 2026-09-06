@@ -14,23 +14,12 @@ class GroupsController < ApplicationController
   end
   def edit
   end
-  def create
-    @group = current_user.groups.build(group_params)
-    if @group.save
-      @group.group_memberships.create(user: current_user)
-      redirect_to @group, notice: "Group was successfully created."
-    else
-      render :new, status: :unprocessable_entity
-    end
-  end
+
 
   def show
 
   end
 
-  def new
-    @group = Group.new
-  end
 
   def destroy
     @group.destroy

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_02_205234) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_06_124318) do
   create_table "categories", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "name"
@@ -59,8 +59,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_02_205234) do
     t.datetime "created_at", null: false
     t.text "description"
     t.string "name"
+    t.integer "post_id"
     t.datetime "updated_at", null: false
     t.integer "user_id"
+    t.index ["post_id"], name: "index_groups_on_post_id"
     t.index ["user_id"], name: "index_groups_on_user_id"
   end
 
@@ -112,6 +114,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_02_205234) do
   add_foreign_key "conversations", "groups"
   add_foreign_key "group_memberships", "groups"
   add_foreign_key "group_memberships", "users"
+  add_foreign_key "groups", "posts"
   add_foreign_key "groups", "users"
   add_foreign_key "messages", "conversations"
   add_foreign_key "messages", "users"

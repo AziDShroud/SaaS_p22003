@@ -19,7 +19,7 @@
 
   <div>
     <%= f.label :category_id, "Category" %><br>
-    <%= f.collection_select :category_id, Category.all, :id, :name, prompt: "Select a Category" %>
+    <%= f.text_field :category_name, placeholder:"Type a Category", style:"width:30%; padding: 6px;" %>
   </div>
   <br>
   <div>

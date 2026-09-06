@@ -2,7 +2,13 @@
   <div class="chat-popup" style="position: fixed; bottom: 20px; right: 20px; width: 340px; background: #ffffff; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 1000; padding: 15px; font-family: sans-serif;">
 
     <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 8px; margin-bottom: 10px;">
-      <h4 style="margin: 0;">Chat</h4>
+      <h4 style="margin: 0;">
+        <% if @conversation.group.present? %>
+          <%= @conversation.group.name %>
+        <% else %>
+          Chat
+        <% end %>
+      </h4>
       <button onclick="document.getElementById('message_modal').innerHTML = ''" style="background: none; border: none; font-size: 16px; cursor: pointer;">&times;</button>
     </div>
 

@@ -19,15 +19,20 @@ class PostsController < ApplicationController
 
   def show
     @post = Post.find(params[:id])
+    # Ensure an associated group exists
+    @group = @post.group || @post.create_group!(
+      name: @post.title,
+      description: @post.content,
+      user: @post.user)
   end
 
   def new
-    @post = Post.new
+    @post = current_user.posts.build
   end
 
   def create
-    # temporary assignment of first user until authentication is added
-    @post = User.first.posts.build(post_params)
+    # author is the authenticated user
+    @post = current_user.posts.build(post_params)
     if @post.save
       redirect_to @post, notice: "Post was successfully created."
     else
@@ -36,6 +41,6 @@ class PostsController < ApplicationController
   end
   private
   def post_params
-    params.require(:post).permit(:title, :content, :category_id)
+    params.require(:post).permit(:title, :content, :category_name)
   end
 end

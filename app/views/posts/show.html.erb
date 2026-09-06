@@ -1,9 +1,25 @@
-<h1><%= @post.title %>></h1>
-<p>
-  <strong>Category:</strong><%= @post.category.name %> |
-  <strong>Author:</strong><%=@post.user.name %> |
-  <strong>Posted:</strong> <%= @post.created_at.strftime("%B %d, %Y") %>
-</p>
+<div class="post-card"style="border:1px solid #ddd; padding: 15px; margin-bottom:15px; border-radius:6px;"></div>
+  <h3><%= @post.title %></h3>
+  <p>
+    <strong>Category:</strong><%= @post.category.name %> |
+    <strong>Author:</strong><%=@post.user.name %> |
+    <strong>Posted:</strong> <%= @post.created_at.strftime("%B %d, %Y") %>
+  </p>
+<% group = @post.group || Group.find_by(post_id: @post.id) || Group.find_by(name: @post.title) %>
+
+<% if @group.present? && @group.persisted? %>
+  <div id="group_membership_<%= @group.id %>" style="margin-top: 10px;">
+    <% if @group.user == current_user %>
+      <span style="color: #007bff; font-weight: bold;">★ Group Owner</span>
+    <% elsif @group.users.include?(current_user) %>
+      <span style="color: green; font-weight: bold; margin-right: 10px;">✓ Member</span>
+      <% membership = @group.group_memberships.find_by(user: current_user) %>
+      <%= button_to "Leave Group", group_group_membership_path(group_id: @group.id, id: membership&.id || current_user.id), method: :delete, data: { turbo: false }, style: "background: #dc3545; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer;" %>
+    <% else %>
+      <%= button_to "Join Group", group_group_memberships_path(group_id: @group.id), method: :post, data: { turbo: false }, style: "background: #28a745; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer;" %>
+    <% end %>
+  </div>
+<% end %>
 
 <hr>
 <div>
@@ -11,4 +27,5 @@
 </div>
 <hr>
 <%= link_to "<- Back to Posts", posts_path %>
+
 <p>Find me in app/views/posts/show.html.erb</p>

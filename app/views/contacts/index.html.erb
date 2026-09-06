@@ -6,25 +6,36 @@
 <% if flash[:alert] %>
   <p style="color: red;"><%= flash[:alert] %></p>
 <% end %>
+
 <h2>Add Contacts</h2>
-<%= form_with scope: :contact, url: contacts_path, method: :post, data: { turbo: false } do |f| %>
-  <div>
-    <%= f.collection_select :contact_id, @users, :id, :name, { prompt: "Select a user" }, { required: true } %>
-    <%= f.submit "Add Contact" %>
-  </div>
+<%group_member_ids = GroupMembership.where(group_id: current_user.group_ids).pluck(:user_id) %>
+<%eligible_contacts = User.where(id: group_member_ids).where.not(id:current_user.id) %>
+<%= form_with(url: contacts_path, method: :post, local: true) do |f| %>
+  <%= f.label :contact_id, "Select Group Peer:" %>
+  <%= f.collection_select :contact_id, @users, :id, lambda { |u| u.name.present? ? "#{u.name} (#{u.email})" : u.email }, prompt: "Choose a group member..." %>
+  <%= f.submit "Add Contact", style: "background: #17a2b8; color: white; border: none; padding: 4px 10px; border-radius: 4px; cursor: pointer;" %>
 <% end %>
+
 <h2>Contacts</h2>
-<% if @contacts.any? %>
-  <ul>
-    <% @contacts.each do |contact_record| %>
-      <li>
-        <strong><%= contact_record.contact.name %></strong>
-        <%= button_to "Remove", contact_path(contact_record), method: :delete, data: { turbo: false } %>
-        <%= button_to "Message", start_direct_conversations_path(recipient_id: contact_record.contact_id), method: :post, data: { turbo_frame: "message_modal" } %>
+<ul>
+  <% @contacts.each do |c| %>
+    <% user = c.respond_to?(:contact) && c.contact.present? ? c.contact : c.try(:contact_user) %>
+
+    <% if user.present? %>
+      <li style="margin-bottom: 12px;">
+        <strong><%= user.name.presence || user.email %></strong>
+        <span style="color: #6c757d; font-size: 0.9em;">(<%= user.email %>)</span>
+
+        <div style="margin-top: 4px; display: flex; gap: 8px;">
+          <%= button_to "Remove", contact_path(c), method: :delete, data: { turbo: false }, style: "background: #dc3545; color: white; border: none; padding: 3px 8px; border-radius: 4px; cursor: pointer;" %>
+          <%= button_to "Message", start_direct_conversations_path(recipient_id: user.id), method: :post, data: { turbo_frame: "message_modal" } %>
+        </div>
       </li>
+    <% else %>
+      <%# Clean up orphaned records if contact record exists without a target user %>
+      <% c.destroy %>
     <% end %>
-  </ul>
-  <%else %>
-  <p>You don't have any contacts yet</p>
-<% end %>
+  <% end %>
+</ul>
 <p>Find me in app/views/contacts/index.html.erb</p>
+

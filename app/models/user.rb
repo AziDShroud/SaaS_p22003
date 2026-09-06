@@ -18,9 +18,11 @@ class User < ApplicationRecord
   # Contact relationships
   has_many :contacts, dependent: :destroy
   has_many :personal_contacts, through: :contacts, source: :contact
+  has_many :contact_users, through: :personal_contacts, source: :contact_users
   has_many :received_contacts, class_name: "Contact", foreign_key: :contact_id, dependent: :destroy
   # Group relationships
   has_many :groups, dependent: :destroy
   has_many :group_memberships, dependent: :destroy
   has_many :groups, through: :group_memberships
+  has_many :owned_groups, class_name:'Group',foreign_key: 'user_id', dependent: :destroy
 end

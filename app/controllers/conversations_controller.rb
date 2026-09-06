@@ -24,14 +24,12 @@ class ConversationsController < ApplicationController
   #Opens/Creates Group Message modal from Group View
   def start_group
     @group = Group.find(params[:group_id])
-    @conversation = Conversation.find_or_create_by(group_id: @group.id, conversation_type: "group_channel") do |c|
-      c.users = @group.members
-      c.name = @group.name
-    end
+    @conversation = Conversation.find_or_create_by(group_id: @group.id, conversation_type: "group_channel")
+
     # Sync group owner + all group members into conversation memberships
     all_members = ([@group.user] + @group.group_memberships.includes(:user).map(&:user)).compact.uniq
-    all_members.each do |member|
-      @conversation.conversation_memberships.find_or_create_by(user: member)
+    all_members.each do |user|
+      @conversation.conversation_memberships.find_or_create_by(user: user)
     end
   respond_to do |format|
     format.turbo_stream
