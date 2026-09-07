@@ -57,21 +57,7 @@
 <hr>
 <!-- Owner-Only Section rendered ONCE -->
 <% if @group.user == current_user %>
-  <h2>Add User</h2>
-  <% eligible_users = User.where.not(id: @group.member_ids) %>
 
-  <% if eligible_users.any? %>
-    <%= form_with(model: [@group, GroupMembership.new], local: true) do |f| %>
-      <div>
-        <%= f.collection_select :user_id, eligible_users, :id, :email, prompt: "Select a user to add" %>
-        <%= f.submit "Add Member" %>
-      </div>
-    <% end %>
-  <% else %>
-    <p>There are no other users to add.</p>
-  <% end %>
-<hr>
-  <%= button_to "Group Chat", start_group_conversations_path(group_id: @group.id), method: :post, data: { turbo_frame: "message_modal" } %>
   <div style="margin-top: 20px;">
     <%= button_to "Delete Group", group_path(@group), method: :delete, data: { turbo_confirm: "Are you sure?" } %>
   </div>

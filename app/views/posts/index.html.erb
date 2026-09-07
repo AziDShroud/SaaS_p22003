@@ -19,7 +19,7 @@
 <% @posts.each do |post| %>
   <div>
     <h3><%= link_to post.title, post %></h3>
-    <p><strong>Category:</strong> <%= post.category.name %> |<strong>Author:</strong><%= post.user.name %></p>
+    <p><strong>Category:</strong> <%= post.category.name %> |<strong>Author:</strong><%= post.user.email %></p>
     <p><%= truncate(post.content, length: 150) %></p>
   </div>
   <hr>
