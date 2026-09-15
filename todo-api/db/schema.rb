@@ -10,7 +10,25 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_14_171303) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_15_165553) do
+  create_table "items", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.boolean "done"
+    t.string "name"
+    t.integer "todo_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["todo_id"], name: "index_items_on_todo_id"
+  end
+
+  create_table "todos", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "created_by"
+    t.string "title"
+    t.datetime "updated_at", null: false
+    t.integer "user_id", null: false
+    t.index ["user_id"], name: "index_todos_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "email"
@@ -18,4 +36,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_14_171303) do
     t.string "password_digest"
     t.datetime "updated_at", null: false
   end
+
+  add_foreign_key "items", "todos"
+  add_foreign_key "todos", "users"
 end
