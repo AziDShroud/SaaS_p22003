@@ -20,6 +20,28 @@ RSpec.describe "Todos API", type: :request do
       expect(first_todo['items'].count).to eq(3)
     end
   end
+
+  describe 'GET /todos/:id when record belongs to another user' do
+    let!(:other_user) {create(:user)}
+    let(:other_token) {JsonWebToken.encode(user_id: other_user.id.to_s)}
+    let(:other_headers) { { 'Authorization' => "Bearer #{other_token}", 'ACCEPT' => 'application/json'} }
+    before {get "/todos/#{todo_id}", headers: other_headers}
+    it 'returns status code 404' do
+      expect(response).to have_http_status(404)
+    end
+  end
+  describe 'PUT /todos/:id when record belongs to another user' do
+    let!(:other_user) {create(:user)}
+    let(:other_token) {JsonWebToken.encode(user_id: other_user.id.to_s)}
+    let(:other_headers) { { 'Authorization' => "Bearer #{other_token}", 'ACCEPT' => 'application/json'} }
+    before do
+      put "/todos/#{todo_id}", headers: other_headers, params: {title: 'Hacked Title'}, as: :json
+    end
+    it 'returns status code 404 and does not update the record' do
+      expect(response).to have_http_status(404)
+      expect(todos.first.reload.title).not_to eq('Hacked Title')
+    end
+  end
   describe 'POST /todos' do
       before do
         post '/todos',

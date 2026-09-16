@@ -44,6 +44,17 @@ RSpec.describe 'Items API', type: :request do
       end
     end
   end
+
+  describe 'GET /todos/:todo_id/items when todo belongs to another user' do
+    let!(:user2) {create(:user)}
+    let(:user2_token) {JsonWebToken.encode(user_id: user2.id.to_s)}
+    let(:user2_headers) {{'Authorization' => "Bearer #{user2_token}", 'ACCEPT' => 'application/json'}}
+    before {get "/todos/#{todo_id}/items", headers: user2_headers}
+    it 'returns status code 404' do
+      expect(response).to have_http_status(404)
+    end
+  end
+
   describe 'POST /todos/:todo_id/items' do
     let(:valid_attributes) {{name: 'Buy milk', done: false}}
     context 'when request attributes are valid' do

@@ -2,14 +2,16 @@ require 'rails_helper'
 
 RSpec.describe 'Authentication API', type: :request do
   let!(:user){create(:user)}
-
+  let(:headers) {{'Authorization'=> "Bearer #{JsonWebToken.encode(user_id: user.id.to_s)}"}}
   describe 'POST /signup' do
-    context 'when valid request' do
-      it 'creates a user and returns an authentication token' do
-        post '/signup', params: {name: 'New User', email: 'new@example.com', password: 'password123'}
-        expect(response).to have_http_status(:created)
-        expect(json_response).to have_key('token')
-      end
+    let(:valid_attributes) do
+      { name: 'Test User', email: 'signup@example.com', password: 'password123', password_confirmation: 'password123' }
+    end
+
+    it 'creates a user and returns an authentication token' do
+      post '/signup', params: valid_attributes, as: :json
+      expect(response).to have_http_status(:created)
+      expect(JSON.parse(response.body)['auth_token']).not_to be_nil
     end
   end
 
@@ -24,7 +26,7 @@ RSpec.describe 'Authentication API', type: :request do
   end
   describe 'GET /auth/logout' do
     it 'returns a success message'do
-      get '/auth/logout'
+      get '/auth/logout', headers: headers
       expect(response).to have_http_status(:ok)
     end
   end
